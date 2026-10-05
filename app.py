@@ -77,29 +77,17 @@ def get_statements(entity_value):
             for record in result
         ]
 
-# def get_entity_graph(entity_value):
-#     query = """
-#     MATCH (d:Document)
-#           -[c:CONTAINS]->
-#           (s:Statement)
-#           -[m:MENTIONS]->
-#           (e:Entity)
-#           -[n:NORMALIZED_TO]->
-#           (ne:NormalizedEntity {value: $value})
+def get_entity_graph(
+    entity_values,
+    show_authors=False,
+    document_ids=None
+):
 
-#     RETURN d, c, s, m, e, n, ne
-#     """
-
-#     return driver.execute_query(
-#         query,
-#         value=entity_value,
-#         database_=database,
-#         routing_=RoutingControl.READ,
-#     )
-
-def get_entity_graph(entity_value, show_authors=False, document_id=None):
+    if document_ids is None:
+        document_ids = []
 
     if show_authors:
+
         query = """
         MATCH (d:Document)
               -[c:CONTAINS]->
@@ -107,7 +95,9 @@ def get_entity_graph(entity_value, show_authors=False, document_id=None):
               -[m:MENTIONS]->
               (e:Entity)
               -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity {value: $value})
+              (ne:NormalizedEntity)
+
+        WHERE ne.value IN $entity_values
 
         OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
 
@@ -123,7 +113,7 @@ def get_entity_graph(entity_value, show_authors=False, document_id=None):
               -[n:NORMALIZED_TO]->
               (ne:NormalizedEntity)
 
-        WHERE elementId(d) = $document_id
+        WHERE elementId(d) IN $document_ids
 
         OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
 
@@ -131,6 +121,7 @@ def get_entity_graph(entity_value, show_authors=False, document_id=None):
         """
 
     else:
+
         query = """
         MATCH (d:Document)
               -[c:CONTAINS]->
@@ -138,7 +129,9 @@ def get_entity_graph(entity_value, show_authors=False, document_id=None):
               -[m:MENTIONS]->
               (e:Entity)
               -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity {value: $value})
+              (ne:NormalizedEntity)
+
+        WHERE ne.value IN $entity_values
 
         RETURN d, c, s, m, e, n, ne
 
@@ -152,19 +145,19 @@ def get_entity_graph(entity_value, show_authors=False, document_id=None):
               -[n:NORMALIZED_TO]->
               (ne:NormalizedEntity)
 
-        WHERE elementId(d) = $document_id
+        WHERE elementId(d) IN $document_ids
 
         RETURN d, c, s, m, e, n, ne
         """
 
     return driver.execute_query(
         query,
-        value=entity_value,
-        document_id=document_id,
+        entity_values=entity_values,
+        document_ids=document_ids,
         database_=database,
         routing_=RoutingControl.READ,
     )
-    
+
 def get_full_graph():
     query = """
     MATCH (a:Author)-[w:WROTE]->(d:Document)-[c:CONTAINS]->(s:Statement)
@@ -234,12 +227,23 @@ def on_node_click(node):
     if "Document" in labels:
         document_id = node.id
 
-        st.session_state.clicked_document = document_id
+        if "opened_documents" not in st.session_state:
+            st.session_state.opened_documents = []
+
+        if document_id not in st.session_state.opened_documents:
+            st.session_state.opened_documents.append(document_id)
     
     elif "NormalizedEntity" in labels:
         normalized_entity = node.properties.get("value")
 
         if normalized_entity:
+
+            if "opened_normalized_entities" not in st.session_state:
+                st.session_state.opened_normalized_entities = []
+
+            if normalized_entity not in st.session_state.opened_normalized_entities:
+                st.session_state.opened_normalized_entities.append(normalized_entity)
+            
             st.session_state.pending_selected_entity = normalized_entity
 
 
@@ -429,10 +433,17 @@ else:
     with col_graph:
         st.subheader("Knowledge graph")
 
+        entity_values = list(
+            dict.fromkeys(
+                [selected_entity]
+                + st.session_state.get("opened_normalized_entities", [])
+            )
+        )
+
         result = get_entity_graph(
-            selected_entity,
+            entity_values,
             show_authors=st.session_state.show_authors,
-            document_id=st.session_state.get("clicked_document")
+            document_ids=st.session_state.get("opened_documents", [])
         )
 
     # ─────────────────────────────────────
