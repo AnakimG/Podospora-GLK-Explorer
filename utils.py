@@ -1,11 +1,12 @@
-import streamlit as st
-from neo4j import GraphDatabase, Result, RoutingControl
 import os
+
+import streamlit as st
 from dotenv import load_dotenv
+from neo4j import GraphDatabase, Result, RoutingControl
+
 from summarizer import generate_summary
 
 load_dotenv()
-
 
 
 uri = os.getenv("NEO4J_URI_AURA")
@@ -14,6 +15,30 @@ password = os.getenv("NEO4J_PASSWORD_AURA")
 database = os.getenv("NEO4J_DATABASE_AURA")
 
 openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
+
+
+category_colors = {
+    "1/7/8 - Life Cycle - Reproduction and Morphogenesis ": "#A78BFA",  # violet
+    "2 - Genomics and Genome Architecture ": "#FBD45D",  # jaune
+    "3/4 - Mitochondria - Energy Metabolism and Aging ": "#4F86F7",  # bleu
+    "5/6 - Signal Transduction - Regulation and Stress Response ": "#5FDCC4",  # turquoise
+    "9 - Vegetative Incompatibility and Cell Death ": "#F5A65B",  # orange
+    "10 - Comparative and Evolutionary Biology ": "#EE6F6F",  # corail
+    "11 - Host–Pathogen and Symbiotic Interactions ": "#7BD389",  # vert
+    "12 - Biotechnology and Applied Research ": "#F291CE",  # rose
+}
+
+category_key = {
+    "category_1": "1/7/8 - Life Cycle - Reproduction and Morphogenesis ",
+    "category_2": "2 - Genomics and Genome Architecture ",
+    "category_3": "3/4 - Mitochondria - Energy Metabolism and Aging ",
+    "category_4": "5/6 - Signal Transduction - Regulation and Stress Response ",
+    "category_5": "9 - Vegetative Incompatibility and Cell Death ",
+    "category_6": "10 - Comparative and Evolutionary Biology " ,
+    "category_7": "11 - Host–Pathogen and Symbiotic Interactions ",
+    "category_8": "12 - Biotechnology and Applied Research ",
+}
+
 @st.cache_resource
 def get_driver():
     return GraphDatabase.driver(
@@ -24,9 +49,14 @@ def get_driver():
 
 driver = get_driver()
 
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+#  Functions to interact with the Neo4j database
+# ------------------------------------------------------------------------------------------------------------------------------------------------
 
 @st.cache_data
 def get_normalized_entities():
+    """Fetch all normalized entities from the Neo4j database and return them as a list of strings."""
+
     query = """
     MATCH (n:NormalizedEntity)
     RETURN n.value AS value
@@ -39,6 +69,9 @@ def get_normalized_entities():
 
 @st.cache_data
 def get_statements(entity_value):
+
+    """Fetch statements associated with a given normalized entity value from the Neo4j database and return them as a list of dictionaries."""
+
     query = """
     MATCH (d:Document)
           -[:CONTAINS]->
@@ -70,6 +103,8 @@ def get_statements(entity_value):
 
 
 def get_entity_graph(entity_values, show_authors=False, document_ids=None):
+
+    """Fetch the graph data for the given normalized entity values and document IDs from the Neo4j database."""
 
     if document_ids is None:
         document_ids = []
@@ -146,6 +181,9 @@ def get_entity_graph(entity_values, show_authors=False, document_ids=None):
 
 
 def get_full_graph():
+
+    """Fetch the entire graph data from the Neo4j database, including authors, documents, statements, entities, and normalized entities."""
+
     query = """
     MATCH (a:Author)-[w:WROTE]->(d:Document)-[c:CONTAINS]->(s:Statement)
           -[m:MENTIONS]->(e:Entity)
@@ -163,6 +201,9 @@ def get_full_graph():
 
 @st.cache_data
 def generate_cached_summary(normalized_entity, statements):
+
+    """Generate a summary for the given normalized entity and its associated statements using the `generate_summary` function."""
+
     return generate_summary(normalized_entity, statements)
 
 
@@ -177,6 +218,9 @@ node_colors = {
 
 @st.cache_data
 def get_graph_stats():
+
+    """Fetch the counts of various node types in the Neo4j database, including documents, statements, entities, normalized entities, and authors."""
+
     queries = {
         "documents": "MATCH (n:Document) RETURN count(n) AS count",
         "statements": "MATCH (n:Statement) RETURN count(n) AS count",
@@ -195,6 +239,9 @@ def get_graph_stats():
 
 
 def get_document_neighbors(document_id):
+    
+    """Fetch the neighboring nodes and relationships for a given document ID from the Neo4j database."""
+
     query = """
     MATCH (d:Document)-[c:CONTAINS]->(s:Statement)
           -[m:MENTIONS]->(e:Entity)
@@ -212,9 +259,35 @@ def get_document_neighbors(document_id):
         )
 
         return result.to_eager_result()
+    
+def get_category_graph(category):
 
+    """Fetch the graph data for a specific category from the Neo4j database, including authors,documents, statements, entities, and normalized entities associated with that category."""
+
+    query = """
+    MATCH (a:Author)-[w:WROTE]->(d:Document {category: $category})
+    -[c:CONTAINS]->(s:Statement)
+    -[m:MENTIONS]->(e:Entity)
+    -[n:NORMALIZED_TO]->(ne:NormalizedEntity)
+    
+    RETURN a, w, d, c, s, m, e, n, ne"""
+
+    with driver.session(database=database) as session:
+        result = session.run(
+            query,
+            category=category,
+        )
+
+        return result.to_eager_result()
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+# Functions to handle node click events in the graph visualization
+# ------------------------------------------------------------------------------------------------------------------------------------------------
 
 def on_node_click(node):
+    
+    """Handle the click event on a node in the graph visualization. Depending on the type of node clicked (Document or NormalizedEntity), it updates the session state to keep track of opened documents and normalized entities."""
+    
     labels = node.properties.get("labels", [])
     if "Document" in labels:
         document_id = node.id
@@ -238,20 +311,17 @@ def on_node_click(node):
             st.session_state.pending_selected_entity = normalized_entity
 
 
-
-category_colors = {
-    "1/7/8 - Life Cycle - Reproduction and Morphogenesis ": "#A78BFA",  # violet
-    "2 - Genomics and Genome Architecture ": "#FBD45D",  # jaune
-    "3/4 - Mitochondria - Energy Metabolism and Aging ": "#4F86F7",  # bleu
-    "5/6 - Signal Transduction - Regulation and Stress Response ": "#5FDCC4",  # turquoise
-    "9 - Vegetative Incompatibility and Cell Death ": "#F5A65B",  # orange
-    "10 - Comparative and Evolutionary Biology ": "#EE6F6F",  # corail
-    "11 - Host–Pathogen and Symbiotic Interactions ": "#7BD389",  # vert
-    "12 - Biotechnology and Applied Research ": "#F291CE",  # rose
-}
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+# Graph Styling
+# ------------------------------------------------------------------------------------------------------------------------------------------------
 
 def style_graph(VG):
+
+    """
+    Apply styling to the nodes in the graph visualization based on their labels and properties. 
+    This function sets the color, size, and caption for each node according to its type (Author, Document, Statement, Entity, NormalizedEntity) and specific properties like category or value.
+    """
+    
     for node in VG.nodes:
         labels = node.properties.get("labels", [])
 
@@ -283,6 +353,10 @@ def style_graph(VG):
 
 
 def style_full_graph(VG):
+    """
+    Apply styling to the nodes in the full graph visualization based on their labels and properties.
+    """
+    
     for node in VG.nodes:
         labels = node.properties.get("labels", [])
 
@@ -312,4 +386,3 @@ def style_full_graph(VG):
             node.color = node_colors["NormalizedEntity"]
             node.size = 40
             node.caption = node.properties.get("value", "")
-

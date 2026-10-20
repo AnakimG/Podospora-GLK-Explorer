@@ -8,6 +8,7 @@ from utils import (
     get_entity_graph,
     get_statements,
     get_normalized_entities,
+    get_category_graph,
     style_graph,
     style_full_graph,
     node_colors,
@@ -153,8 +154,16 @@ if "explore_entities" not in st.session_state:
 if st.button("Explore normalized entities"):
     st.session_state.explore_entities = True
     st.rerun()
+if "show_category_graph" not in st.session_state:
+    st.session_state.show_category_graph = False
+if"selected_category" not in st.session_state:
+    st.session_state.selected_category = None
 
-## AFFICHAGE GRAPHE COMPLET
+
+# --------------------------------------------------------------------------------------------------
+# AFFICHAGE GRAPHE COMPLET
+# --------------------------------------------------------------------------------------------------
+
 # Affichage statistiques
 if not st.session_state.explore_entities:
     st.subheader("Global graph")
@@ -169,59 +178,72 @@ if not st.session_state.explore_entities:
     col5.metric("Authors", stats["authors"])
 
     # Visualisation du graphe
+    col_graph, col_category = st.columns([6,2])
 
-    result = get_full_graph()
+    with col_graph: 
 
-    VG = from_neo4j(result)
+        if st.session_state.selected_category is None:
+            result = get_full_graph()
+            graph_title = "Global knowledge graph"
+            graph_key = "global_graph"
 
-    style_full_graph(VG)
+        else:
+            category = st.session_state.selected_category
+            result = get_category_graph(category)
+            graph_title = category
+            graph_key = f"category_graph_{category}"
 
-    legend = {}
+        st.subheader(graph_title)
+        VG = from_neo4j(result)
+        style_full_graph(VG)
 
-    legend["Statement"] = node_colors["Statement"]
-    legend["Entity"] = node_colors["Entity"]
-    legend["NormalizedEntity"] = node_colors["NormalizedEntity"]
+        legend = {}
+        legend["Statement"] = node_colors["Statement"]
+        legend["Entity"] = node_colors["Entity"]
+        legend["NormalizedEntity"] = node_colors["NormalizedEntity"]
 
-    legend["Life Cycle - Reproduction and Morphogenesis"] = category_colors[
-        "1/7/8 - Life Cycle - Reproduction and Morphogenesis "
+        VG.set_legend(nodes=legend)
+        VG.show_legend(True)
+
+        widget = VG.render_widget(
+            width="100%",
+            height="700px",
+        )
+
+        display_widget(
+            widget,
+            key=graph_key,
+        )
+    
+    with col_category:
+
+        st.subheader("Explore knowledge graph by category")
+
+        categories = [
+        "1/7/8 - Life Cycle - Reproduction and Morphogenesis ",
+        "2 - Genomics and Genome Architecture ",
+        "3/4 - Mitochondria - Energy Metabolism and Aging ",
+        "5/6 - Signal Transduction - Regulation and Stress Response ",
+        "9 - Vegetative Incompatibility and Cell Death ",
+        "10 - Comparative and Evolutionary Biology ",
+        "11 - Host–Pathogen and Symbiotic Interactions ",
+        "12 - Biotechnology and Applied Research ",
     ]
-    legend["Genomics and Genome Architecture"] = category_colors[
-        "2 - Genomics and Genome Architecture "
-    ]
-    legend["Mitochondria - Energy Metabolism and Aging"] = category_colors[
-        "3/4 - Mitochondria - Energy Metabolism and Aging "
-    ]
-    legend["Signal Transduction - Regulation and Stress Response"] = category_colors[
-        "5/6 - Signal Transduction - Regulation and Stress Response "
-    ]
-    legend["Vegetative Incompatibility and Cell Death"] = category_colors[
-        "9 - Vegetative Incompatibility and Cell Death "
-    ]
-    legend["Comparative and Evolutionary Biology"] = category_colors[
-        "10 - Comparative and Evolutionary Biology "
-    ]
-    legend["Host–Pathogen and Symbiotic Interactions"] = category_colors[
-        "11 - Host–Pathogen and Symbiotic Interactions "
-    ]
-    legend["Biotechnology and Applied Research"] = category_colors[
-        "12 - Biotechnology and Applied Research "
-    ]
+        
+        for i, category in enumerate(categories):
+            if st.button(category, key=f"category_{i}"):
+                st.session_state.selected_category = category
+                st.rerun()
+        
+        if st.session_state.selected_category is not None:
+            if st.button("Back to global graph"):
+                st.session_state.selected_category = None
+                st.rerun()
 
-    VG.set_legend(nodes=legend)
-    VG.show_legend(True)
+# --------------------------------------------------------------------------------------------------
+# MISE EN PLACE ET AFFICHAGE GRAPHE POUR EXPLORATION
+# --------------------------------------------------------------------------------------------------
 
-    widget = VG.render_widget(
-        width="100%",
-        height="700px",
-    )
-
-    display_widget(
-        widget,
-        key="global_graph",
-    )
-
-
-## MISE EN PLACE ET AFFICAHGE GRAPHE POUR EXPLORATION
 if "show_authors" not in st.session_state:
     st.session_state.show_authors = False
 
@@ -327,6 +349,7 @@ else:
 
             st.subheader("Graph-based narrative")
 
+            # Session à revoir pour gérer les clicks
             result_summary = clickable_summary(
                 data={
                     "summary": summary,
