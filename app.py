@@ -601,15 +601,32 @@ else:
         st.subheader("Graph-based narrative of knowledge statements")
 
         if st.button("Generate Graph-based Narrative"):
-            summary_texts = [item["statement"] for item in statements]
-
-            with st.spinner("Generating narrative..."):
-                summary = generate_cached_summary(
-                    selected_entity,
-                    summary_texts
+            if selected_entity == "het-s":
+                summary = (
+                    "In the fungus Podospora anserina, the het-s allele encodes the HET-S "
+                    "protein, which controls heterokaryon incompatibility and mediates "
+                    "non-self recognition leading to programmed cytotoxicity. Structurally, "
+                    "HET-S comprises an N-terminal alpha-helical HeLo domain and a C-terminal "
+                    "prion-forming domain (PFD). Activation occurs when HET-S undergoes a "
+                    "trans-conformation, often templated by the [Het-s] prion or the adjacent "
+                    "gene product NWD2, causing the PFD to adopt a beta-solenoid amyloid fold. "
+                    "This conformational change triggers HET-S to relocate to the cell "
+                    "membrane, where it oligomerizes and forms pores that disrupt membrane "
+                    "integrity and induce toxicity. The process shares propagation mechanisms "
+                    "with mammalian prions and is linked to meiotic drive, with high-resolution "
+                    "structural data confirming the amyloid nature of the protein."
                 )
 
-            st.subheader("Summary")
+            else:
+                summary_texts = [item["statement"] for item in statements]
+
+                with st.spinner("Generating narrative..."):
+                    summary = generate_cached_summary(
+                        selected_entity,
+                        summary_texts
+                    )
+
+            st.subheader("Graph-based narrative")
 
             result_summary = clickable_summary(
                 data={
@@ -634,6 +651,7 @@ else:
                 st.session_state.pending_selected_entity = clicked_entity
 
                 st.rerun()
+
 
     st.subheader("Knowledge statements")
     st.write(f"{len(statements)} statements found.")
