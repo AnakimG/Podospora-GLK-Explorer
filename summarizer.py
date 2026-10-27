@@ -14,7 +14,7 @@ lm = dspy.LM(
     cache=False,
 )
 
-dspy.configure(lm=lm)
+# dspy.configure(lm=lm)
 
 
 class Summarize(dspy.Signature):

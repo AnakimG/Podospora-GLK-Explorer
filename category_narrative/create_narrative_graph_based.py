@@ -18,7 +18,7 @@ lm = dspy.LM(
     temperature=0.7,
     cache=False,
 )
-dspy.configure(lm=lm)
+# dspy.configure(lm=lm)
 
 # ----------------
 # Signature
