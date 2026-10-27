@@ -1,5 +1,4 @@
 import json
-import os
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -10,10 +9,10 @@ from summarizer import generate_summary
 load_dotenv()
 
 
-uri = os.getenv("NEO4J_URI_AURA")
-username = os.getenv("NEO4J_USERNAME_AURA")
-password = os.getenv("NEO4J_PASSWORD_AURA")
-database = os.getenv("NEO4J_DATABASE_AURA")
+uri = st.secrets["NEO4J_URI_AURA"]
+username = st.secrets["NEO4J_USERNAME_AURA"]
+password = st.secrets["NEO4J_PASSWORD_AURA"]
+database = st.secrets["NEO4J_DATABASE_AURA"]
 
 
 

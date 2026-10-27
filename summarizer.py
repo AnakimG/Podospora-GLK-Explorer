@@ -1,5 +1,6 @@
 import os
 import dspy
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,7 +8,7 @@ load_dotenv()
 
 lm = dspy.LM(
     model="openrouter/qwen/qwen3.5-9b",
-    api_key=os.getenv("OPENROUTER_API_KEY"),
+    api_key=st.secrets["OPENROUTER_API_KEY"],
     api_base="https://openrouter.ai/api/v1",
     temperature=0.3,
     cache=False,
