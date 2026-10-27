@@ -320,6 +320,9 @@ def get_category_description():
     """Load the category descriptions from a JSON file and return them as a dictionary."""
 
     category_file = PROJECT_DIR / "category_narrative" / "summarized_category.json"
+    st.write("Dossier du projet :", str(PROJECT_DIR))
+    st.write("Fichier trouvé :", category_file.exists())
+    
     with open(
         category_file, "r", encoding="utf-8"
     ) as f:
