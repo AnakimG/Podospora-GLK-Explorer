@@ -3,6 +3,7 @@ import json
 import streamlit as st
 from dotenv import load_dotenv
 from neo4j import GraphDatabase, Result, RoutingControl
+from pathlib import Path
 
 from summarizer import generate_summary
 
@@ -312,13 +313,15 @@ def get_category_graph(category):
 # Functions to get category description and 10 most frequent normalized entities
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 
+PROJECT_DIR = Path(__file__).resolve().parent
 
 @st.cache_data
 def get_category_description():
     """Load the category descriptions from a JSON file and return them as a dictionary."""
 
+    category_file = PROJECT_DIR / "category_narrative" / "summarized_category.json"
     with open(
-        "/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_category.json", "r", encoding="utf-8"
+        category_file, "r", encoding="utf-8"
     ) as f:
         return json.load(f)
 
