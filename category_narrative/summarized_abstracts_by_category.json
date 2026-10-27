@@ -1,0 +1,294 @@
+{
+  "3/4 - Mitochondria - Energy Metabolism and Aging ": [
+    {
+      "doi": "10.1186/1471-2156-8-9",
+      "summarized_abstract": "Dietary restriction extends lifespan in *Podospora anserina*, but mitochondrial plasmids negate this effect by integrating into the mitochondrial genome. These plasmids act as insertional mutators, primarily near rDNA loci, which explains their negative impact on lifespan extension under dietary restriction conditions."
+    },
+    {
+      "doi": "10.18632/aging.100029",
+      "summarized_abstract": "PaMTH1 is an O-methyltransferase in Podospora anserina protecting against oxidative stress. Deletion reduces stress resistance and lifespan, identifying it as a longevity assurance factor in lifespan control."
+    },
+    {
+      "doi": "10.1371/journal.pone.0004919",
+      "summarized_abstract": "Mitochondrial copper dynamics drive ageing in *Podospora anserina*, characterized by increased cytosolic copper and mitochondrial matrix leakage. Manipulating these levels extends lifespan, and similar copper-induced senescence markers appear in human fibroblasts, indicating a conserved molecular pathway across eukaryotes."
+    },
+    {
+      "doi": "10.18632/aging.100251",
+      "summarized_abstract": "The eukaryotic glyoxalase system detoxifies methylglyoxal in *Podospora anserina*. Co-overexpression of glyoxalase I and II extends lifespan on high glucose media, linking detoxification efficiency to cellular health and aging."
+    },
+    {
+      "doi": "10.1371/journal.pone.0016620",
+      "summarized_abstract": "In *Podospora anserina*, AOX-dependent respiration triggers mitochondrial biogenesis via a retrograde response to compensate for mitochondrial impairments. While oxygen consumption increases, ATP levels remain below wild-type, and ROS release is elevated, indicating a novel mechanism for cellular maintenance involving mitochondrial quality control."
+    },
+    {
+      "doi": "10.1371/journal.pone.0038138",
+      "summarized_abstract": "Deletion of the mitochondrial protease PaLon1 causes lethality at extreme temperatures and reduces lifespan in filamentous fungi, highlighting its role in protein quality control and development. Furthermore, N-domain mutations disrupt proteolytic activity and the fungal life cycle, suggesting the N-domain's all-helical structure is essential for substrate interaction."
+    },
+    {
+      "doi": "10.1038/ncomms2397",
+      "summarized_abstract": "Deletion of mitochondrial CLP protease in Podospora anserina unexpectedly increases lifespan and health. Human ClpP expression reverses this, confirming functional conservation. This validates the organism as a model for eukaryotic CLP protease studies."
+    },
+    {
+      "doi": "10.1371/journal.pone.0083109",
+      "summarized_abstract": "[ ## completed ## ]]"
+    },
+    {
+      "doi": "10.4161/auto.28148",
+      "summarized_abstract": "In the fungal aging model *Podospora anserina*, autophagy levels increase during aging and nitrogen starvation. Deletion of the autophagy kinase *Paatg1* shortens lifespan, identifying autophagy as a key longevity assurance mechanism."
+    },
+    {
+      "doi": "10.3389/fcell.2021.616520",
+      "summarized_abstract": "Synergetic ablation of mitochondrial protease *PaCLPP* and AMPK subunit *PaSnf1* extends lifespan in *Podospora anserina*. This study highlights complex interactions between mitochondrial quality control and energy metabolism in aging control, with effects modulated by temperature and mating-type alleles."
+    },
+    {
+      "doi": "10.3390/cells10102775",
+      "summarized_abstract": "The i-AAA protease PaIAP regulates mitochondrial phospholipid homeostasis in the aging fungus *Podospora anserina*. Its absence extends lifespan by altering cardiolipin composition and inducing mitophagy, while PaIAP is required for stress adaptation."
+    },
+    {
+      "doi": "10.3390/jof7040263",
+      "summarized_abstract": "Research on Podospora anserina identifies mitochondrial pathways, mtDNA stability, and ROS balance as critical factors in aging. Cellular homeostasis relies on repair mechanisms and autophagy, though the complete signaling network remains partially understood."
+    },
+    {
+      "doi": "10.3390/cells10040757",
+      "summarized_abstract": "Ablation of the mitochondrial ATP-synthase assembly factor PaATPE triggers premature cell death via cyclophilin D-dependent mitophagy. Inhibiting autophagy or cyclophilin D restores lifespan, identifying autophagy-dependent cell death as a key response to impaired mitochondrial function in aging."
+    },
+    {
+      "doi": "10.3390/ijms23094741",
+      "summarized_abstract": "This study demonstrates a tight connection between the MICOS complex, mitochondrial phospholipid homeostasis, and aging in *Podospora anserina*. It reveals that MICOS manipulation alters cardiolipin composition, promoting longevity through beneficial membrane properties and specific cardiolipin species."
+    },
+    {
+      "doi": "10.3390/cells11030519",
+      "summarized_abstract": "An oleic acid diet extends the lifespan of *P. anserina* and PaAtg24 deletion mutants by restoring autophagy and vacuole function via altered membrane trafficking. It additionally reduces reactive oxygen species production through a bypass of mitochondrial respiratory chain complexes I and II."
+    }
+  ],
+  "2 - Genomics and Genome Architecture ": [
+    {
+      "doi": "10.1186/gb-2008-9-5-r77",
+      "summarized_abstract": "The study presents a draft genome sequence of the fungus *Podospora anserina*, revealing dynamic evolution characterized by gene shuffling and loss compared to *Neurospora crassa*. The genome contains specialized genes for degrading complex carbon sources, such as lignin and cellulose, adapted to the fungus's natural biotope."
+    },
+    {
+      "doi": "10.1186/gb-2008-9-5-223",
+      "summarized_abstract": "The completed genome sequence of the coprophilous fungus Podospora anserina expands fungal genomic sampling. It possesses a rich gene set for complex carbohydrate catabolism adapted to its dung habitat."
+    },
+    {
+      "doi": "10.1186/1471-2148-10-134",
+      "summarized_abstract": "This study investigates the genetic instability and diversification of the allorecognition gene family in the fungus *Podospora anserina*. By analyzing 143 spontaneous mutants, researchers identified frequent rearrangements in repeat arrays. These findings illustrate the extreme genetic instability utilized as a diversification strategy for this eukaryotic system."
+    },
+    {
+      "doi": "10.1371/journal.pone.0073772",
+      "summarized_abstract": "PaYIP3 in Podospora anserina uses a conserved translation frameshift to generate two polypeptides with stage-specific expression. Inactivation impairs growth and spore production, highlighting the mechanism's critical evolutionary role."
+    },
+    {
+      "doi": "10.1101/gr.267609.120",
+      "summarized_abstract": "Researchers discovered a giant transposable element in the fungus *Podospora anserina* that captures meiotic drive genes to form a hyperparasitic structure. This deleterious element varies in genomic location and challenges understanding of transposon size limits and genome evolution."
+    },
+    {
+      "doi": "10.1186/s12864-022-09085-4",
+      "summarized_abstract": "This study utilized 37 RNA-seq datasets to improve the functional annotation of the *Podospora anserina* genome, identifying cis-regulatory elements, UTRs, and alternative splicing. These findings enhance gene regulation understanding in filamentous fungi."
+    },
+    {
+      "doi": "10.1371/journal.pgen.1010347",
+      "summarized_abstract": "This study reveals convergent evolution of pseudo-homothallism and stepwise recombination suppression in the ascomycete fungus *Schizothecium tetrasporum*. Genome analysis indicates a 1.47 Mb recombination-suppressed region around the mating-type locus, supporting a mechanism of sheltering deleterious alleles."
+    },
+    {
+      "doi": "10.1186/s13100-023-00311-8",
+      "summarized_abstract": "Researchers developed a sequence similarity network to classify *crapaud* retrotransposons in the *Podospora anserina* species complex into 14 subfamilies. Phylogenetic analysis indicates ancestor-driven diversification unrelated to genome defense evasion, advancing fungal transposable element classification and evolutionary understanding."
+    },
+    {
+      "doi": "10.1099/mgen.0.001442",
+      "summarized_abstract": "This study utilizes long-read sequencing and AlphaFold 3 modeling to accurately reconstruct WD40 domains in fungal NLRs. It reveals the structural basis, repeat variability, and convergent evolution of heterokaryon incompatibility phenotypes in *Podospora anserina*."
+    }
+  ],
+  "12 - Biotechnology and Applied Research ": [
+    {
+      "doi": "10.1186/1756-0500-3-171",
+      "summarized_abstract": "A novel in silico procedure combined with experimental screening optimizes microarray probe design for gene expression analysis. Probes were selected based on cross-hybridization, stability, and location criteria, then validated experimentally for signal quality.所高校 This approach successfully developed a reliable Agilent 44K microarray platform for Podospora anserina."
+    },
+    {
+      "doi": "10.1371/journal.pone.0029820",
+      "summarized_abstract": "Catalases in *Podospora anserina* are dispensable for vegetative growth but essential for complex biomass assimilation, such as wood shavings containing lignin. They protect cells from hydrogen peroxide generated during this process, with cytosolic CAT2 and secreted CATB playing major protective roles."
+    },
+    {
+      "doi": "10.1186/s13068-019-1548-y",
+      "summarized_abstract": "This study investigated the role of the CBM1 module in fungal LPMO9H activity, finding that while its deletion reduces binding and soluble sugar release, the enzyme retains activity and synergizes with cellulases. Results indicate CBM1 facilitates substrate targeting and product release rather than being strictly required for cellulose network disruption."
+    },
+    {
+      "doi": "10.3390/jof6040278",
+      "summarized_abstract": "Podospora anserina degrades lignocellulose by hydrolyzing β–O-4 linkages, with *Miscanthus giganteus* degradation limited by developmental blocks rather than enzyme inefficiency. Lignin and phenolics stimulate fungal growth and fertility through augmented reactive oxygen species levels."
+    },
+    {
+      "doi": "10.1186/s13068-020-01713-z",
+      "summarized_abstract": "This study provides the first unambiguous chemical evidence of ligninolytic activity in the ascomycete fungus Podospora anserina. Quantitative and proteomic analyses confirmed substantial lignin removal driven by laccases and H2O2-producing enzymes. These results expand the known enzymatic repertoire and contribute to biological lignin conversion technologies."
+    },
+    {
+      "doi": "10.3390/jof9010009",
+      "summarized_abstract": "This study compares culture conditions and chromatin modifications to activate secondary metabolite gene minuto clusters in Podospora anserina. Results show that integrated strategies complement each other to significantly enhance metabolite production, facilitating fungal metabolite discovery."
+    }
+  ],
+  "1/7/8 - Life Cycle - Reproduction and Morphogenesis ": [
+    {
+      "doi": "10.1371/journal.pone.0021476",
+      "summarized_abstract": "This study presents the first genome-wide analysis of mating-type targets in the heterothallic fungus *Podospora anserina*. Transcriptomic profiling of FMR1 and FPR1 revealed diverse regulatory actions on 167 genes, identifying two essential for the sexual cycle. Findings indicate mating-type transcription factors in filamentous fungi regulate more genes and exhibit greater diversity than in yeasts."
+    },
+    {
+      "doi": "10.1371/journal.pone.0037488",
+      "summarized_abstract": "Higher fungi achieve evolutionary success through the dikaryotic life cycle, maintained by clamp and crozier structures. Homeodomain transcription factors in the ascomycete *Podospora anserina* regulate fruiting body maturation via a complex gene network. These factors shape multicellular structures in fungi similarly to their roles in animals and plants."
+    },
+    {
+      "doi": "10.1371/journal.pgen.1003642",
+      "summarized_abstract": "Systematic analysis of 12 HMG-box genes in *Podospora anserina* reveals 11 are essential for sexual reproduction. *PaHMG5* functions as a central hub regulating mating-type genes, establishing a conserved sex determination module analogous to the mammalian SRY/SOX9 system."
+    },
+    {
+      "doi": "10.1371/journal.pgen.1004387",
+      "summarized_abstract": "Researchers identified Spok1 and Spok2, two Meiotic Drive Elements in *Podospora anserina* where Spok1 resists Spok2 killing. These autonomous elements act independently of genomic location and represent novel selfish genetic elements prevalent in fungal genomes that proliferate through meiotic distortion."
+    },
+    {
+      "doi": "10.4161/19420889.2014.994382",
+      "summarized_abstract": "This addendum reviews mechanisms creating and maintaining heterokaryosis in three pseudo-homothallic fungi (*P. anserina*, *Neurospora tetrasperma*, *Agaricus bisporus*). It discusses strategies allowing independent reproduction and cross-mating without relying on mating-type locus structures."
+    },
+    {
+      "doi": "10.1038/s41598-020-57808-y",
+      "summarized_abstract": "Automated image analysis quantifies hyphal network expansion in Podospora anserina. Key metrics inform future mathematical models of fungal thallus development."
+    },
+    {
+      "doi": "10.3389/fmicb.2020.00640",
+      "summarized_abstract": "In *Podospora anserina*, sexual development relies on the shared fission machinery (FIS1 and DNM1) of mitochondria and peroxisomes. Eliminating these proteins disrupts organelle dynamics and segregation, leading to defective spore differentiation and delayed karyogamy."
+    },
+    {
+      "doi": "10.1093/g3journal/jkab159",
+      "summarized_abstract": "Targeted deletion of the PaPks1 melanin biosynthesis gene in Podospora anserina reduces female fertility, unlike a nonsense mutation. These mutants are effective for detecting rare genetic events such as parasexuality and fertilization of nuclei lacking mating-type genes."
+    },
+    {
+      "doi": "10.1128/mBio.01615-21",
+      "summarized_abstract": "Reticulon RTN1 and Yop1 proteins regulate ER structure in *Podospora anserina* hyphal growth and sexual development. RTN1 is essential for meiotic nucleus segregation and ascospore formation."
+    },
+    {
+      "doi": "10.1038/s41598-022-16245-9",
+      "summarized_abstract": "This study proposes a 2D binary-tree simulation model for fungal network growth, demonstrating optimization for exploration and exploitation through specific angular branching. Validated against *Podospora anserina* data, this computationally low-cost tool complements laboratory experiments by enabling rapid testing of multiple conditions."
+    },
+    {
+      "doi": "10.1128/spectrum.01461-22",
+      "summarized_abstract": "The study identifies GUN1 in Podospora anserina as a carnitine-acetyltransferase essential for ascospore germination and appressorium functioning. As an ortholog of M. oryzae Pth2, GUN1 facilitates acetyl coenzyme A shuttling between peroxisomes and mitochondria, highlighting a common genetic regulation in filamentous fungi."
+    },
+    {
+      "doi": "10.3390/jof10010079",
+      "summarized_abstract": "Researchers identified *mcm1* and *VelC* mutations in *Podospora anserina* that induce spontaneous fruiting body development without fertilization. These genes play a key role in coordinating perithecia development with gamete formation and fertilization."
+    },
+    {
+      "doi": "10.1371/journal.pone.0297816",
+      "summarized_abstract": "This study characterizes the thallus development of *Podospora anserina* under environmental stresses using a geomatics-based GIS approach. By focusing on network densification and intra-thallus spaces rather than material quantity, it reveals distinct growth dynamics according to applied stresses. Ultimately, this enhances understanding of how filamentous fungi adapt their network structure to adverse environmental conditions."
+    },
+    {
+      "doi": "10.15698/mic2025.09.860",
+      "summarized_abstract": "The ERMES complex coordinates organelle interactions in *Podospora anserina*, regulating mitochondria, peroxisomes, and ER dynamics. Key components MDM10 and MMM1 are essential for organelle morphology, lipid droplet localization, and mycelial growth. Consequently, ERMES activity is critical for fungal sexual development and cellular functioning."
+    }
+  ],
+  "10 - Comparative and Evolutionary Biology ": [
+    {
+      "doi": "10.1371/journal.pone.0027342",
+      "summarized_abstract": "This study characterizes the HET-s prion domain as a left-handed beta solenoid restricted to Sordariomycetes. Evolutionary analysis reveals rapid prion domain evolution compared to the conserved N-terminal domain. Structural modeling indicates homologs adopt the fold but are less optimized for fibril formation, suggesting limited amyloidogenic scope."
+    },
+    {
+      "doi": "10.1371/journal.pgen.1002876",
+      "summarized_abstract": "A novel strategy successfully relocated the mitochondrial ATP9 gene to the nucleus for the first time using interspecies nuclear versions. This approach reveals critical protein structural adaptations for import and cellular consequences, elucidating evolutionary constraints on mitochondrial gene transfer."
+    },
+    {
+      "doi": "10.1093/molbev/msu047",
+      "summarized_abstract": "This study analyzes the natural variation of the Podospora anserina het-c locus, identifying 11 alleles under diversifying selection. The authors hypothesize that het-c diversity is driven by dual functions in both allorecognition and pathogen defense."
+    },
+    {
+      "doi": "10.1093/gbe/evz194",
+      "summarized_abstract": "A long-term evolution experiment on Podospora anserina revealed genetic adaptation to submerged cultivation through parallel evolution in key proteins.\nSpecific fixations in the FadA subunit across multiple populations suggest that observed mutations were primarily driven by positive selection."
+    },
+    {
+      "doi": "10.7554/eLife.46454",
+      "summarized_abstract": "The *Spok* gene family underlies spore killer types in *Podospora anserina*, establishing a killing hierarchy through distinct chromosomal locations. SPOK protein performs both killing and resistance functions via specific nuclease and kinase domains, with genes dispersing across ascomycetes through cross-species transfer and duplication."
+    },
+    {
+      "doi": "10.1016/j.simyco.2019.08.002",
+      "summarized_abstract": "Multi-gene phylogenetic analyses revealed the genus Thielavia to be highly polyphyletic, necessitating a major taxonomic revision. Consequently, the genus was restricted to its type species, and numerous species were redistributed into nine new genera and a new family. The study concludes that the \"thielavia-like\" morphological trait is homoplastic."
+    },
+    {
+      "doi": "10.1111/jeb.14108",
+      "summarized_abstract": "In *Podospora anserina*, outcrossing consistently reduces fitness compared to selfing, yet individuals do not avoid outcrossing when given a choice. This paradox suggests that pleiotropic effects of non-self recognition genes may explain the lack of mate choice despite high fitness costs."
+    },
+    {
+      "doi": "10.1093/gbe/evae034",
+      "summarized_abstract": "This study provides chromosome-level annotated assemblies for 28 Podospora genomes, revealing conserved structures with minimal divergence. Phylogenetic analysis indicates rapid and recent diversification within the species complex."
+    }
+  ],
+  "11 - Host–Pathogen and Symbiotic Interactions ": [
+    {
+      "doi": "10.1007/s00436-010-2098-1",
+      "summarized_abstract": "Endophytic fungus *Podospora* sp. from *Laggera alata* produced bioactive compounds effective against *Anopheles gambiae* larvae. Sterigmatocystin exhibited the highest potency, comparable to commercial larvicide."
+    },
+    {
+      "doi": "10.3390/jof5030072",
+      "summarized_abstract": "This study reveals that many saprotrophic Ascomycota and Basidiomycota can form appressoria, challenging the view that these structures are exclusive to pathogenic fungi. The findings suggest appressorium differentiation occurs in saprotrophs for biomass degradation, raising questions about the evolutionary origin of these structures in Eumycetes."
+    },
+    {
+      "doi": "10.3389/fmicb.2019.02634",
+      "summarized_abstract": "This study investigates the effects of nitric oxide (NO) and phosphorus (P) stress on the symbiosis between Chinese black truffles (*Tuber indicum*) and host plants (*C做完 illinoinensis*). Exogenous NO application (100 μmol/L SNP) under low P stress significantly enhanced truffle colonization and host plant growth. NO treatment altered rhizosphere microbial communities, correlating denitrifying bacteria richness with colonization, indicating potential for ectomycorrhizal synthesis and truffle cultivation."
+    }
+  ],
+  "5/6 - Signal Transduction - Regulation and Stress Response ": [
+    {
+      "doi": "10.18632/aging.100360",
+      "summarized_abstract": "Mass spectrometry analysis of *Podospora anserina* secretomes identified the catalase PaCATB as decreasing during senescence. PaCATB overexpression increased hydrogen peroxide resistance and lifespan under oxidative stress, while deletion decreased both, highlighting its role as a secretome factor for coping with environmental stress."
+    },
+    {
+      "doi": "10.1371/journal.pone.0049292",
+      "summarized_abstract": "A GRISEA mutation in Podospora anserina induces copper depletion, hypopigmentation, and a 60% lifespan increase via alternative respiration. Transcriptome analysis identified thousands of differentially expressed transcripts and new copper homeostasis factors. The study underscores the value of systems biology in elucidating complex aging mechanisms."
+    },
+    {
+      "doi": "10.3390/jof4030085",
+      "summarized_abstract": "This study identifies PaPro1 and IDC4 as new partners in the *Podospora anserina* PaMpk1 MAP kinase pathway, regulating stationary phase and fertilization. Mutants of STRIPAK complex components show similar phenotypes, confirming Crippled Growth results from abnormal activation of the PaMpk1 cascade."
+    },
+    {
+      "doi": "10.3389/fmicb.2020.01038",
+      "summarized_abstract": "This study investigates Podospora anserina SNF1 (PaSNF1), identifying it as a key regulator of carbon metabolism and energy production. The PaSNF1 knockout mutant shows delayed development, stress hypersensitivity, and altered secondary metabolism, specifically promoting sterigmatocystin synthesis while suppressing cellulase activity. Results indicate PaSNF1 balances primary and secondary metabolism, coordinating vegetative growth, sexual development, and lignocellulose degradation."
+    },
+    {
+      "doi": "10.1128/aem.02378-21",
+      "summarized_abstract": "This study characterizes the GATA-type transcription factor PaNsdD in *Podospora anserina*, demonstrating its essential role in vegetative growth, sexual reproduction, ageing, and stress tolerance. Additionally, PaNsdD regulates the production of 3-acetyl-4-methylpyrrole and interacts with the sterigmatocystin pathway, proving indispensable for the fungus's survival."
+    }
+  ],
+  "9 - Vegetative Incompatibility and Cell Death ": [
+    {
+      "doi": "10.1371/journal.pone.0034854",
+      "summarized_abstract": "This study identifies a conserved mechanism in fungi where STAND proteins template amyloid folds to trigger cell death. It suggests a widespread evolutionary signal transduction mode based on amyloid transmission from STAND receptors to effectors."
+    },
+    {
+      "doi": "10.1371/journal.pbio.1001459",
+      "summarized_abstract": "The [Het-s] prion in *Podospora anserina* mediates cell death by inducing a conformational change in the Het-S protein through co-amyloidogenesis, leading to pore formation and cytosolic leakage. This expands the functional repertoire of amyloids and parallels pathological amyloid toxicity."
+    },
+    {
+      "doi": "10.1371/journal.pbio.1001451",
+      "summarized_abstract": "The HET-s prion converts soluble HET-S into an integral membrane protein that destabilizes membranes. Structural changes expose a transmembrane segment, triggering HET-S oligomerization and pore formation similar to toxins."
+    },
+    {
+      "doi": "10.1534/g3.113.006262",
+      "summarized_abstract": "This study analyzes transcriptional changes during heterokaryon incompatibility in *Podospora anserina*, revealing massive gene reprogramming involving specific domains and metabolic activities. The response resembles host-pathogen interactions and shares similarities with *Neurospora crassa*."
+    },
+    {
+      "doi": "10.1371/journal.pbio.1002059",
+      "summarized_abstract": "This study demonstrates that the fungal NLR NWD2 induces the [Het-s] prion fold via its N-terminal β-solenoid motif. Specific NWD2 variants activate the HET-S pore-forming protein, confirming the role of prion-like signaling in fungal immunity and cell death."
+    },
+    {
+      "doi": "10.1371/journal.pcbi.1007922",
+      "summarized_abstract": "This study employs Self-Consistent Path Sampling simulations to investigate prion replication, overcoming the limitations of plain molecular dynamics and experimental methods. Applied to the HET-s prion domain, the results reveal similarities to mammalian PrP Sc propagation, suggesting common templating mechanisms across evolutionarily distant proteins."
+    },
+    {
+      "doi": "10.1038/s41559-022-01734-x",
+      "summarized_abstract": "In *Podospora anserina*, allorecognition loci define reproductively isolated groups via pleiotropic effects on sexual compatibility driven by antagonistic interactions between *het-r* and *het-v*. This provides a molecular example of sympatric reproductive isolation driven by balancing selection."
+    },
+    {
+      "doi": "10.1073/pnas.2109418119",
+      "summarized_abstract": "This study characterizes the regulation of gasdermin-based cell death in the fungus *Podospora anserina*, demonstrating that fungal gasdermins are activated by proteolytic cleavage, similar to mammalian systems. Genomic analysis indicates gasdermin and protease genes are frequently clustered in fungi, reinforcing evolutionary parallels between fungal and mammalian cell death pathways."
+    },
+    {
+      "doi": "10.1080/12298093.2024.2322211",
+      "summarized_abstract": "This study reviews the [Het-s] prion in *Podospora anserina*, detailing its historical discovery, structural architecture relative to other prions, and roles in heterokaryon incompatibility, meiotic drive, and programmed cell death."
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 import os
 import dspy
+from dotenv import load_dotenv
 
-api_key=os.getenv("OPENROUTER_API_KEY")
+load_dotenv()
+
 
 lm = dspy.LM(
     model="openrouter/qwen/qwen3.5-9b",
