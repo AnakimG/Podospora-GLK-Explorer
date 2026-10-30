@@ -34,7 +34,12 @@ SUMMARIZER = dspy.ChainOfThought(Summarize)
 
 
 def generate_summary(normalized_entity, statements):
+
     with dspy.context(lm=lm):
+
+        st.write("DSPy LM:", dspy.settings.lm)
+        st.write("LM correctly loaded:", dspy.settings.lm is lm)
+
         result = SUMMARIZER(
             normalized_entity=normalized_entity,
             statements=statements,
