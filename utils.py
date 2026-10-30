@@ -208,7 +208,7 @@ def get_full_graph():
         routing_=RoutingControl.READ,
     )
 
-
+@st.cache_data
 def generate_cached_summary(normalized_entity, statements):
     """Generate a summary for the given normalized entity and its associated statements using the `generate_summary` function."""
 
