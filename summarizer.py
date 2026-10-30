@@ -14,9 +14,6 @@ lm = dspy.LM(
     cache=False,
 )
 
-# dspy.configure(lm=lm)
-
-
 class Summarize(dspy.Signature):
     """Summarize Statements linked to a specific Normalized Entity."""
 
@@ -37,9 +34,10 @@ SUMMARIZER = dspy.ChainOfThought(Summarize)
 
 
 def generate_summary(normalized_entity, statements):
-    result = SUMMARIZER(
-        normalized_entity=normalized_entity,
-        statements=statements,
-    )
+    with dspy.context(lm=lm):
+        result = SUMMARIZER(
+            normalized_entity=normalized_entity,
+            statements=statements,
+        )
 
     return result.summary
