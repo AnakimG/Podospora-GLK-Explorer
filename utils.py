@@ -119,7 +119,7 @@ def get_statements(entity_value):
             for record in result
         ]
 
-@st.cache_data(ttl=3600)
+@st.cache_resource(ttl=3600)
 def get_entity_graph(entity_values, show_authors=False, document_ids=None):
     """Fetch the graph data for the given normalized entity values and document IDs from the Neo4j database."""
 
