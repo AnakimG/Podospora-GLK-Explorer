@@ -3,7 +3,6 @@ from neo4j_viz.neo4j import from_neo4j
 from neo4j_viz.streamlit import display_widget
 import html
 from utils import (
-    driver,
     check_neo4j_connection,
     get_graph_stats,
     get_full_graph,
@@ -152,7 +151,7 @@ st.title("Podospora GLK Explorer")
 st.write("Graph of literature knowledge exploration")
 
 try:
-    check_neo4j_connection(driver=driver)
+    check_neo4j_connection()
 
 except Exception as e:
     st.error(f"Neo4j connection failed: {e}")

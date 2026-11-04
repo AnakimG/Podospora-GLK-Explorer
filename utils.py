@@ -64,7 +64,7 @@ driver = get_driver()
 
 
 @st.cache_resource
-def check_neo4j_connection(driver):
+def check_neo4j_connection():
     driver.verify_connectivity()
     return True
 # ------------------------------------------------------------------------------------------------------------------------------------------------
