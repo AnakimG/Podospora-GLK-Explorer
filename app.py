@@ -152,7 +152,7 @@ st.title("Podospora GLK Explorer")
 st.write("Graph of literature knowledge exploration")
 
 try:
-    check_neo4j_connection()
+    check_neo4j_connection(driver=driver)
 
 except Exception as e:
     st.error(f"Neo4j connection failed: {e}")
