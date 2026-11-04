@@ -51,6 +51,7 @@ categories_name = {
 }
 
 
+
 @st.cache_resource
 def get_driver():
     return GraphDatabase.driver(
@@ -61,12 +62,17 @@ def get_driver():
 
 driver = get_driver()
 
+
+@st.cache_resource
+def check_neo4j_connection():
+    driver.verify_connectivity()
+    return True
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 #  Functions to interact with the Neo4j database
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def get_normalized_entities():
     """Fetch all normalized entities from the Neo4j database and return them as a list of strings."""
 
@@ -113,7 +119,7 @@ def get_statements(entity_value):
             for record in result
         ]
 
-
+@st.cache_data(ttl=3600)
 def get_entity_graph(entity_values, show_authors=False, document_ids=None):
     """Fetch the graph data for the given normalized entity values and document IDs from the Neo4j database."""
 
@@ -190,7 +196,7 @@ def get_entity_graph(entity_values, show_authors=False, document_ids=None):
         routing_=RoutingControl.READ,
     )
 
-
+@st.cache_resource(ttl=3600)
 def get_full_graph():
     """Fetch the entire graph data from the Neo4j database, including authors, documents, statements, entities, and normalized entities."""
 
@@ -265,7 +271,7 @@ def get_graph_stats(selected_category):
 
         return stats
 
-
+@st.cache_resource(ttl=3600)
 def get_document_neighbors(document_id):
     """Fetch the neighboring nodes and relationships for a given document ID from the Neo4j database."""
 
@@ -287,7 +293,7 @@ def get_document_neighbors(document_id):
 
         return result.to_eager_result()
 
-
+@st.cache_resource(ttl=3600)
 def get_category_graph(category):
     """Fetch the graph data for a specific category from the Neo4j database, including authors,documents, statements, entities, and normalized entities associated with that category."""
 
@@ -325,6 +331,7 @@ def get_category_description():
     ) as f:
         return json.load(f)
 
+@st.cache_data
 def get_top_normalized_entities(category, limit=10):
     """Fetch the top normalized entities for a given category from the Neo4j database, ranked by the number of associated documents."""
 
@@ -402,7 +409,7 @@ def get_entity_cooccurrences(entity_value):
         ]
 
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def get_shared_articles(entity1, entity2):
     """Return articles containing both normalized entities."""
 
