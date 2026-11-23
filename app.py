@@ -176,6 +176,8 @@ if "show_narrative" not in st.session_state:
     st.session_state.show_narrative = False
 if "current_summary" not in st.session_state:
     st.session_state.current_summary = None
+if "opened_node_ids" not in st.session_state:
+    st.session_state.opened_node_ids = []
 
 # --------------------------------------------------------------------------------------------------
 # AFFICHAGE GRAPHE COMPLET
@@ -407,6 +409,7 @@ if not st.session_state.explore_entities:
 # MISE EN PLACE ET AFFICHAGE GRAPHE POUR EXPLORATION
 # --------------------------------------------------------------------------------------------------
     if st.button("Explore normalized entities"):
+        st.session_state.opened_node_ids = []
         st.session_state.explore_entities = True
         st.session_state.opened_normalized_entities = []
         st.session_state.opened_documents = []
@@ -439,12 +442,13 @@ else:
         "Select a normalized entity to explore", entities, key="entity_selector"
     )
 
-    # Maintain the previous entity in the exploration graph to preserve the exploration path
+    # Reset exploration graph if the selected entity changed via the selector to provide a fresh start
     if "prev_entity" in st.session_state and st.session_state.prev_entity != selected_entity:
-        if "opened_normalized_entities" not in st.session_state:
-            st.session_state.opened_normalized_entities = []
-        if st.session_state.prev_entity not in st.session_state.opened_normalized_entities:
-            st.session_state.opened_normalized_entities.append(st.session_state.prev_entity)
+        st.session_state.opened_node_ids = []
+        st.session_state.opened_normalized_entities = []
+        st.session_state.opened_documents = []
+        st.session_state.opened_authors = []
+        st.session_state.opened_statements = []
 
     st.session_state.prev_entity = selected_entity
 
@@ -454,6 +458,7 @@ else:
         st.subheader("Knowledge graph")
 
         if st.button("Clear exploration graph", key="clear_exploration_graph"):
+            st.session_state.opened_node_ids = []
             st.session_state.opened_normalized_entities = []
             st.session_state.opened_documents = []
             st.session_state.opened_authors = []
@@ -467,9 +472,15 @@ else:
             )
         )
 
+        # result = get_entity_graph(
+        #     entity_values,
+        #     document_ids=st.session_state.get("opened_documents", []),
+        #     author_values=st.session_state.get("opened_authors", []),
+        #     statement_values=st.session_state.get("opened_statements", []),
+        # )
         result = get_entity_graph(
-            entity_values,
-            document_ids=st.session_state.get("opened_documents", []),
+        entity_values,
+        expanded_node_ids=st.session_state.get("opened_node_ids", [])
         )
 
         # ─────────────────────────────────────
@@ -494,11 +505,12 @@ else:
         )
 
         widget.on_node_event("click", on_node_click)
+        widget.on_node_event("double_click", on_node_expand)
 
         display_widget(
             widget,
-            key="document_neighborhood",
-        )
+            key=f"document_neighborhood_{selected_entity}",
+        )   
 
     statements = get_statements(selected_entity)
 
@@ -654,13 +666,16 @@ else:
         )
 
         # Filter
-        min_articles = st.slider(
-            "Minimum number of shared articles",
-            min_value=1,
-            max_value=max_count,
-            value=1,
-            key="cooccurrence_threshold",
-        )
+        if max_count > 1:
+            min_articles = st.slider(
+                "Minimum number of shared articles",
+                min_value=1,
+                max_value=max_count,
+                value=1,
+                key="cooccurrence_threshold",
+            )
+        else:
+            min_articles = 1
 
         filtered_cooccurrences = [
             item for item in cooccurrences

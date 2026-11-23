@@ -123,54 +123,77 @@ def get_statements(entity_value):
             for record in result
         ]
 
-@st.cache_resource(ttl=3600)
-def get_entity_graph(entity_values, document_ids=None):
-    """Fetch the graph data for the given normalized entity values and document IDs from the Neo4j database."""
 
-    if document_ids is None:
-        document_ids = []
+@st.cache_resource(ttl=3600)
+def get_entity_graph(
+    entity_values,
+    expanded_node_ids=None
+):
+    """
+    Fetch the initial entity graph and expand the
+    direct neighborhood of double-clicked nodes.
+    """
+
+    expanded_node_ids = expanded_node_ids or []
 
     query = """
-    MATCH (d:Document)
-            -[c:CONTAINS]->
-            (s:Statement)
-            -[m:MENTIONS]->
-            (e:Entity)
-            -[n:NORMALIZED_TO]->
-            (ne:NormalizedEntity)
+    // Initial graph around selected normalized entities
+    MATCH (d:Document)-[c:CONTAINS]->(s:Statement)
+          -[m:MENTIONS]->(e:Entity)
+          -[n:NORMALIZED_TO]->(ne:NormalizedEntity)
 
     WHERE ne.value IN $entity_values
 
+    // Retrieve authors associated with documents
     OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
 
-    RETURN d, c, s, m, e, n, ne, a, w
+    // Retrieve direct neighbors of expanded nodes
+    OPTIONAL MATCH (expanded)-[r]-(neighbor)
+    WHERE elementId(expanded) IN $expanded_node_ids
 
-    UNION
-
-    MATCH (d:Document)
-            -[c:CONTAINS]->
-            (s:Statement)
-            -[m:MENTIONS]->
-            (e:Entity)
-            -[n:NORMALIZED_TO]->
-            (ne:NormalizedEntity)
-
-    WHERE elementId(d) IN $document_ids
-
-    OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
-
-    RETURN d, c, s, m, e, n, ne, a, w
+    RETURN
+        d, c, s, m, e, n, ne,
+        a, w,
+        expanded, r, neighbor
     """
-
-
 
     return driver.execute_query(
         query,
         entity_values=entity_values,
-        document_ids=document_ids,
+        expanded_node_ids=expanded_node_ids,
         database_=database,
         routing_=RoutingControl.READ,
     )
+
+# @st.cache_resource(ttl=3600)
+# def get_entity_graph(entity_values, document_ids=None, author_values=None, statement_values=None):
+#     """Fetch the graph data for the given normalized entity values, document IDs, author names, and statement values from the Neo4j database."""
+
+#     document_ids = document_ids or []
+#     author_values = author_values or []
+#     statement_values = statement_values or []
+
+#     query = """
+#     MATCH (d:Document)-[c:CONTAINS]->(s:Statement)-[m:MENTIONS]->(e:Entity)-[n:NORMALIZED_TO]->(ne:NormalizedEntity)
+#     WHERE ne.value IN $entity_values
+#        OR elementId(d) IN $document_ids
+#        OR EXISTS { MATCH (a:Author)-[:WROTE]->(d) WHERE a.name IN $author_values }
+#        OR EXISTS { MATCH (d)-[:CONTAINS]->(s_seed:Statement) WHERE s_seed.value IN $statement_values }
+#     OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
+#     RETURN d, c, s, m, e, n, ne, a, w
+#     """
+
+
+#     return driver.execute_query(
+#         query,
+#         entity_values=entity_values,
+#         document_ids=document_ids,
+#         author_values=author_values,
+#         statement_values=statement_values,
+#         database_=database,
+#         routing_=RoutingControl.READ,
+#     )
+
 
 @st.cache_resource(ttl=3600)
 def get_full_graph():
@@ -434,19 +457,31 @@ def get_shared_articles(entity1, entity2):
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
 def on_node_click(node):
-    """Handle the click event on a node in the graph visualization. It updates the session state to select the clicked entity/document/author."""
+    """
+    Handle click events on graph nodes.
+    """
+
+    # Ignore events referring to nodes no longer present
+    if node is None or node.properties is None:
+        return
+
     labels = node.properties.get("labels", [])
+
     if "Document" in labels:
         st.session_state.pending_selected_document = node.id
+
     elif "NormalizedEntity" in labels:
         normalized_entity = node.properties.get("value")
         if normalized_entity:
             st.session_state.pending_selected_entity = normalized_entity
+
     elif "Author" in labels:
         author_name = node.properties.get("name")
         if author_name:
             st.session_state.pending_selected_author = author_name
+
     elif "Statement" in labels:
         statement_value = node.properties.get("value")
         if statement_value:
@@ -454,39 +489,24 @@ def on_node_click(node):
 
 
 def on_node_expand(node):
-    """Handle the double-click event on a node in the graph visualization. It adds the node to the set of opened entities/documents to expand the neighborhood."""
-    labels = node.properties.get("labels", [])
-    if "Document" in labels:
-        document_id = node.id
-        if "opened_documents" not in st.session_state:
-            st.session_state.opened_documents = []
-        if document_id not in st.session_state.opened_documents:
-            st.session_state.opened_documents.append(document_id)
+    """
+    Handle double-click events on graph nodes.
+    """
 
-    elif "NormalizedEntity" in labels:
-        normalized_entity = node.properties.get("value")
-        if normalized_entity:
-            if "opened_normalized_entities" not in st.session_state:
-                st.session_state.opened_normalized_entities = []
-            if normalized_entity not in st.session_state.opened_normalized_entities:
-                st.session_state.opened_normalized_entities.append(normalized_entity)
+    # Ignore stale events
+    if node is None or node.properties is None:
+        return
 
-    elif "Author" in labels:
-        author_name = node.properties.get("name")
-        if author_name:
-            if "opened_authors" not in st.session_state:
-                st.session_state.opened_authors = []
-            if author_name not in st.session_state.opened_authors:
-                st.session_state.opened_authors.append(author_name)
+    node_id = node.id
 
-    elif "Statement" in labels:
-        statement_value = node.properties.get("value")
-        if statement_value:
-            if "opened_statements" not in st.session_state:
-                st.session_state.opened_statements = []
-            if statement_value not in st.session_state.opened_statements:
-                st.session_state.opened_statements.append(statement_value)
+    if not node_id:
+        return
 
+    if "opened_node_ids" not in st.session_state:
+        st.session_state.opened_node_ids = []
+
+    if node_id not in st.session_state.opened_node_ids:
+        st.session_state.opened_node_ids.append(node_id)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------
 # Graph Styling
