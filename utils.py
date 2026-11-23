@@ -9,15 +9,15 @@ from summarizer import generate_summary
 
 load_dotenv()
 
-uri = st.secrets["NEO4J_URI"]
-username = st.secrets["NEO4J_USERNAME"]
-password = st.secrets["NEO4J_PASSWORD"]
-database = st.secrets["NEO4J_DATABASE"]
+# uri = st.secrets["NEO4J_URI"]
+# username = st.secrets["NEO4J_USERNAME"]
+# password = st.secrets["NEO4J_PASSWORD"]
+# database = st.secrets["NEO4J_DATABASE"]
 
-# uri = st.secrets["NEO4J_URI_AURA"]
-# username = st.secrets["NEO4J_USERNAME_AURA"]
-# password = st.secrets["NEO4J_PASSWORD_AURA"]
-# database = st.secrets["NEO4J_DATABASE_AURA"]
+uri = st.secrets["NEO4J_URI_AURA"]
+username = st.secrets["NEO4J_USERNAME_AURA"]
+password = st.secrets["NEO4J_PASSWORD_AURA"]
+database = st.secrets["NEO4J_DATABASE_AURA"]
 
 
 
