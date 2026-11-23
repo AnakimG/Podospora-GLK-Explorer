@@ -1,29 +1,30 @@
+import html
+
 import streamlit as st
 from neo4j_viz.neo4j import from_neo4j
 from neo4j_viz.streamlit import display_widget
-import html
-from utils import (
-    check_neo4j_connection,
-    get_graph_stats,
-    get_full_graph,
-    get_entity_graph,
-    get_statements,
-    get_normalized_entities,
-    get_category_graph,
-    style_graph,
-    style_full_graph,
-    node_colors,
-    category_colors,
-    categories_name,
-    on_node_click,
-    generate_cached_summary,
-    get_entity_cooccurrences,
-    get_shared_articles,
-    
-    get_category_description,
-    get_top_normalized_entities,
-)
 
+from utils import (
+    categories_name,
+    category_colors,
+    check_neo4j_connection,
+    generate_cached_summary,
+    get_category_description,
+    get_category_graph,
+    get_entity_cooccurrences,
+    get_entity_graph,
+    get_full_graph,
+    get_graph_stats,
+    get_normalized_entities,
+    get_shared_articles,
+    get_statements,
+    get_top_normalized_entities,
+    node_colors,
+    on_node_click,
+    on_node_expand,
+    style_full_graph,
+    style_graph,
+)
 
 clickable_summary = st.components.v2.component(
     "clickable_summary",
@@ -84,11 +85,11 @@ clickable_summary = st.components.v2.component(
         }
 
         const pattern = new RegExp(
-            "(" +
+            "(?<![a-zA-Z0-9])(" +
             sortedEntities
-                .map(escapeRegex)
+                .map(e => escapeRegex(e) + (e.toLowerCase().endsWith("s") ? "" : "s?"))
                 .join("|") +
-            ")",
+            ")(?![a-zA-Z0-9])",
             "gi"
         );
 
@@ -109,7 +110,11 @@ clickable_summary = st.components.v2.component(
             const text = match[0];
 
             const canonicalEntity = sortedEntities.find(
-                entity => entity.toLowerCase() === text.toLowerCase()
+                entity => {
+                    const e = entity.toLowerCase();
+                    const t = text.toLowerCase();
+                    return e === t || (!e.endsWith("s") && e + "s" === t);
+                }
             );
 
             const button = document.createElement("button");
@@ -165,10 +170,12 @@ if "explore_entities" not in st.session_state:
     st.session_state.explore_entities = False
 if "show_category_graph" not in st.session_state:
     st.session_state.show_category_graph = False
-if"selected_category" not in st.session_state:
+if "selected_category" not in st.session_state:
     st.session_state.selected_category = None
-if "show_authors" not in st.session_state:
-    st.session_state.show_authors = False
+if "show_narrative" not in st.session_state:
+    st.session_state.show_narrative = False
+if "current_summary" not in st.session_state:
+    st.session_state.current_summary = None
 
 # --------------------------------------------------------------------------------------------------
 # AFFICHAGE GRAPHE COMPLET
@@ -221,53 +228,78 @@ if not st.session_state.explore_entities:
             height="700px",
         )
 
+        widget.on_node_event("double_click", on_node_expand)
+
         display_widget(
             widget,
             key=graph_key,
         )
     
     with col_category:
-        st.subheader("")
-        st.subheader("")
-        st.subheader("Explore knowledge graph by category")
-
-        for i, category in enumerate(categories_name.keys()):
-
-            category_name = categories_name[category]
-            color = category_colors[category]
-
-            st.markdown(
-                f"""
-                <style>
-                .st-key-category_{i} button {{
-                    background-color: {color} !important;
-                    color: black !important;
-                    border: none !important;
-                }}
-
-                .st-key-category_{i} button:hover {{
-                    filter: brightness(0.9);
-                }}
-                </style>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                category_name,
-                key=f"category_{i}",
-            ):
-                st.session_state.selected_category = category
-                st.rerun()
-
-        if st.session_state.selected_category is not None:
-
-            if st.button(
-                "Back to global graph",
-                key="back_to_global",
-            ):
-                st.session_state.selected_category = None
-                st.rerun()
+        if st.session_state.selected_category is None:
+            st.subheader("Explore knowledge graph by category")
+            for i, category in enumerate(categories_name.keys()):
+                category_name = categories_name[category]
+                color = category_colors[category]
+                st.markdown(
+                    f"""
+                    <style>
+                    .st-key-category_{i} button {{
+                        background-color: {color} !important;
+                        color: black !important;
+                        border: none !important;
+                    }}
+                    .st-key-category_{i} button:hover {{
+                        filter: brightness(0.9);
+                    }}
+                    </style>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                if st.button(
+                    category_name,
+                    key=f"category_{i}",
+                    use_container_width=True,
+                ):
+                    st.session_state.selected_category = category
+                    st.rerun()
+        else:
+            st.subheader("")
+            st.write("")
+            st.subheader("Most frequent normalized entities")
+            category = st.session_state.selected_category
+            top_entities = get_top_normalized_entities(category)
+            
+            with st.container(height=700):
+                if top_entities:
+                    # Sort by document count, from highest to lowest
+                    top_entities = sorted(
+                        top_entities,
+                        key=lambda item: item.get("document_count", 0),
+                        reverse=True,
+                    )
+                    for entity_data in top_entities:
+                        entity_name = entity_data.get("normalized_entity", "Unknown")
+                        document_count = entity_data.get("document_count", 0)
+                        with st.container(border=True):
+                            col_name, col_count = st.columns([4, 1])
+                            with col_name:
+                                if st.button(
+                                    entity_name,
+                                    key=f"top_entity_{entity_name}",
+                                    use_container_width=True,
+                                ):
+                                    st.session_state.explore_entities = True
+                                    st.session_state.pending_selected_entity = entity_name
+                                    if "opened_normalized_entities" not in st.session_state:
+                                        st.session_state.opened_normalized_entities = []
+                                    if entity_name not in st.session_state.opened_normalized_entities:
+                                        st.session_state.opened_normalized_entities.append(entity_name)
+                                    st.rerun()
+                            with col_count:
+                                st.markdown(f"**{document_count}** papers")
+                else:
+                    st.info("No normalized entities found for this category.")
     
 
     
@@ -279,135 +311,94 @@ if not st.session_state.explore_entities:
 
         # Retrieve category description
         category_descriptions = get_category_description()
-        # description_data = category_descriptions.get(category, {})
 
         description = category_descriptions.get(
             category,
             "No description available."
         )
 
-        # Retrieve top normalized entities
-        top_entities = get_top_normalized_entities(category)
-
-        # Two-column layout
-        description_col, entities_col = st.columns(
-            [3, 2],
-            gap="large"
-        )
         color = category_colors[category]
-        with description_col:
-            st.markdown(
-                """
-                <div style="
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.08em;
-                    color: #888;
-                    margin-bottom: 0.7rem;
-                ">
-                    Category overview
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        
+        st.markdown(
+            """
+            <div style="
+                font-size: 0.8rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: #888;
+                margin-bottom: 0.7rem;
+            ">
+                Category overview
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-            safe_description = html.escape(str(description))
+        safe_description = html.escape(str(description))
 
-            st.markdown(
-                f"""
-                <div style="
-                    background-color: rgba(128, 128, 128, 0.08);
-                    border-left: 4px solid {color};
-                    border-radius: 10px;
-                    padding: 1.2rem 1.4rem;
-                    line-height: 1.7;
-                    min-height: 150px;
-                ">
-                    {safe_description}
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        st.markdown(
+            f"""
+            <div style="
+                background-color: rgba(128, 128, 128, 0.08);
+                border-left: 4px solid {color};
+                border-radius: 10px;
+                padding: 1.2rem 1.4rem;
+                line-height: 1.7;
+                min-height: 150px;
+                margin-bottom: 2rem;
+            ">
+                {safe_description}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-        with entities_col:
-            st.markdown(
-                """
-                <div style="
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    text-transform: uppercase;
-                    letter-spacing: 0.08em;
-                    color: #888;
-                    margin-bottom: 0.7rem;
-                ">
-                    Most frequent concepts
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-            if top_entities:
-
-                # Sort by document count, from highest to lowest
-                top_entities = sorted(
-                    top_entities,
-                    key=lambda item: item.get("document_count", 0),
-                    reverse=True,
-                )
-
-                entity_rows = ""
-
-                for entity_data in top_entities:
-                    entity_name = html.escape(
-                        str(entity_data.get("normalized_entity", "Unknown"))
-                    )
-                    document_count = entity_data.get("document_count", 0)
-
-                    entity_rows += f"""
-                    <div style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        gap: 12px;
-                        padding: 10px 0;
-                        border-bottom: 1px solid rgba(128, 128, 128, 0.18);
-                    ">
-                        <span style="
-                            font-size: 0.9rem;
-                            line-height: 1.4;
-                        ">
-                            {entity_name}
-                        </span>
-                        <span style="
-                            flex-shrink: 0;
-                            font-size: 0.78rem;
-                            font-weight: 600;
-                            background-color: {color};
-                            border-radius: 12px;
-                            padding: 4px 9px;
-                            white-space: nowrap;
-                        ">
-                            {document_count} papers
-                        </span>
-                    </div>
-                    """
-
+        st.divider()
+        st.subheader("Explore other categories")
+        
+        # Grid of category buttons
+        cols = st.columns(3)
+        for i, category_id in enumerate(categories_name.keys()):
+            col_idx = i % 3
+            category_name = categories_name[category_id]
+            cat_color = category_colors[category_id]
+            
+            with cols[col_idx]:
                 st.markdown(
                     f"""
-                    <div style="
-                        background-color: rgba(128, 128, 128, 0.08);
-                        border-radius: 10px;
-                        padding: 0.5rem 1rem;
-                    ">
-                        {entity_rows}
-                    </div>
+                    <style>
+                    .st-key-category_bottom_{i} button {{
+                        background-color: {cat_color} !important;
+                        color: black !important;
+                        border: none !important;
+                    }}
+                    .st-key-category_bottom_{i} button:hover {{
+                        filter: brightness(0.9);
+                    }}
+                    </style>
                     """,
                     unsafe_allow_html=True,
                 )
-
-            else:
-                st.info("No normalized entities found for this category.")
+                if st.button(
+                    category_name,
+                    key=f"category_bottom_{i}",
+                    use_container_width=True,
+                ):
+                    st.session_state.selected_category = category_id
+                    st.rerun()
+        
+        if st.button(
+            "Back to global graph",
+            key="back_to_global_bottom",
+            use_container_width=True,
+        ):
+            st.session_state.selected_category = None
+            st.session_state.opened_normalized_entities = []
+            st.session_state.opened_documents = []
+            st.session_state.opened_authors = []
+            st.session_state.opened_statements = []
+            st.rerun()
 
 
 
@@ -417,11 +408,21 @@ if not st.session_state.explore_entities:
 # --------------------------------------------------------------------------------------------------
     if st.button("Explore normalized entities"):
         st.session_state.explore_entities = True
+        st.session_state.opened_normalized_entities = []
+        st.session_state.opened_documents = []
+        st.session_state.opened_authors = []
+        st.session_state.opened_statements = []
+        if "prev_entity" in st.session_state:
+            del st.session_state.prev_entity
         st.rerun()
 
 else:
     if st.button("Back to global graph"):
         st.session_state.explore_entities = False
+        st.session_state.opened_normalized_entities = []
+        st.session_state.opened_documents = []
+        st.session_state.opened_authors = []
+        st.session_state.opened_statements = []
         st.rerun()
 
     entities = get_normalized_entities()
@@ -438,10 +439,26 @@ else:
         "Select a normalized entity to explore", entities, key="entity_selector"
     )
 
+    # Maintain the previous entity in the exploration graph to preserve the exploration path
+    if "prev_entity" in st.session_state and st.session_state.prev_entity != selected_entity:
+        if "opened_normalized_entities" not in st.session_state:
+            st.session_state.opened_normalized_entities = []
+        if st.session_state.prev_entity not in st.session_state.opened_normalized_entities:
+            st.session_state.opened_normalized_entities.append(st.session_state.prev_entity)
+
+    st.session_state.prev_entity = selected_entity
+
     col_graph, col_summary = st.columns([5, 2])
 
     with col_graph:
         st.subheader("Knowledge graph")
+
+        if st.button("Clear exploration graph", key="clear_exploration_graph"):
+            st.session_state.opened_normalized_entities = []
+            st.session_state.opened_documents = []
+            st.session_state.opened_authors = []
+            st.session_state.opened_statements = []
+            st.rerun()
 
         entity_values = list(
             dict.fromkeys(
@@ -452,7 +469,6 @@ else:
 
         result = get_entity_graph(
             entity_values,
-            show_authors=st.session_state.show_authors,
             document_ids=st.session_state.get("opened_documents", []),
         )
 
@@ -484,16 +500,20 @@ else:
             key="document_neighborhood",
         )
 
-        if st.button("Authors"):
-            st.session_state.show_authors = not st.session_state.show_authors
-            st.rerun()
-
     statements = get_statements(selected_entity)
 
     with col_summary:
         st.subheader("Graph-based narrative of knowledge statements")
 
+        # Reset narrative if entity changed
+        if st.session_state.get("narrative_entity") != selected_entity:
+            st.session_state.show_narrative = False
+            st.session_state.narrative_entity = selected_entity
+
         if st.button("Generate Graph-based Narrative"):
+            st.session_state.show_narrative = True
+
+        if st.session_state.get("show_narrative"):
             if selected_entity == "het-s":
                 summary = (
                     "In the fungus Podospora anserina, the het-s allele encodes the HET-S "
@@ -509,10 +529,8 @@ else:
                     "with mammalian prions and is linked to meiotic drive, with high-resolution "
                     "structural data confirming the amyloid nature of the protein."
                 )
-
             else:
                 summary_texts = [item["statement"] for item in statements]
-
                 with st.spinner("Generating narrative..."):
                     summary = generate_cached_summary(
                         selected_entity,
@@ -541,8 +559,6 @@ else:
                     st.session_state.opened_normalized_entities.append(
                         clicked_entity
                     )
-
-                st.session_state.pending_selected_entity = clicked_entity
 
                 st.rerun()
 
@@ -707,9 +723,9 @@ else:
                     is_selected = entity == selected_association
 
                     with st.container(border=True):
-                        row1, row2 = st.columns([4, 1])
+                        col_select, col_add, col_count = st.columns([3, 1, 1])
 
-                        with row1:
+                        with col_select:
                             if st.button(
                                 entity,
                                 key=f"cooccurrence_{selected_entity}_{entity}",
@@ -719,7 +735,20 @@ else:
                                 st.session_state[association_key] = entity
                                 st.rerun()
 
-                        with row2:
+                        with col_add:
+                            if st.button(
+                                "➕",
+                                key=f"add_to_graph_{selected_entity}_{entity}",
+                                help="Add this entity and its neighborhood to the graph",
+                                use_container_width=True,
+                            ):
+                                if "opened_normalized_entities" not in st.session_state:
+                                    st.session_state.opened_normalized_entities = []
+                                if entity not in st.session_state.opened_normalized_entities:
+                                    st.session_state.opened_normalized_entities.append(entity)
+                                st.rerun()
+
+                        with col_count:
                             st.markdown(
                                 f"**{count}**",
                                 help="Number of shared articles",

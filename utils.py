@@ -9,11 +9,15 @@ from summarizer import generate_summary
 
 load_dotenv()
 
+uri = st.secrets["NEO4J_URI"]
+username = st.secrets["NEO4J_USERNAME"]
+password = st.secrets["NEO4J_PASSWORD"]
+database = st.secrets["NEO4J_DATABASE"]
 
-uri = st.secrets["NEO4J_URI_AURA"]
-username = st.secrets["NEO4J_USERNAME_AURA"]
-password = st.secrets["NEO4J_PASSWORD_AURA"]
-database = st.secrets["NEO4J_DATABASE_AURA"]
+# uri = st.secrets["NEO4J_URI_AURA"]
+# username = st.secrets["NEO4J_USERNAME_AURA"]
+# password = st.secrets["NEO4J_PASSWORD_AURA"]
+# database = st.secrets["NEO4J_DATABASE_AURA"]
 
 
 
@@ -120,73 +124,45 @@ def get_statements(entity_value):
         ]
 
 @st.cache_resource(ttl=3600)
-def get_entity_graph(entity_values, show_authors=False, document_ids=None):
+def get_entity_graph(entity_values, document_ids=None):
     """Fetch the graph data for the given normalized entity values and document IDs from the Neo4j database."""
 
     if document_ids is None:
         document_ids = []
 
-    if show_authors:
-        query = """
-        MATCH (d:Document)
-              -[c:CONTAINS]->
-              (s:Statement)
-              -[m:MENTIONS]->
-              (e:Entity)
-              -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity)
+    query = """
+    MATCH (d:Document)
+            -[c:CONTAINS]->
+            (s:Statement)
+            -[m:MENTIONS]->
+            (e:Entity)
+            -[n:NORMALIZED_TO]->
+            (ne:NormalizedEntity)
 
-        WHERE ne.value IN $entity_values
+    WHERE ne.value IN $entity_values
 
-        OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
+    OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
 
-        RETURN d, c, s, m, e, n, ne, a, w
+    RETURN d, c, s, m, e, n, ne, a, w
 
-        UNION
+    UNION
 
-        MATCH (d:Document)
-              -[c:CONTAINS]->
-              (s:Statement)
-              -[m:MENTIONS]->
-              (e:Entity)
-              -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity)
+    MATCH (d:Document)
+            -[c:CONTAINS]->
+            (s:Statement)
+            -[m:MENTIONS]->
+            (e:Entity)
+            -[n:NORMALIZED_TO]->
+            (ne:NormalizedEntity)
 
-        WHERE elementId(d) IN $document_ids
+    WHERE elementId(d) IN $document_ids
 
-        OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
+    OPTIONAL MATCH (a:Author)-[w:WROTE]->(d)
 
-        RETURN d, c, s, m, e, n, ne, a, w
-        """
+    RETURN d, c, s, m, e, n, ne, a, w
+    """
 
-    else:
-        query = """
-        MATCH (d:Document)
-              -[c:CONTAINS]->
-              (s:Statement)
-              -[m:MENTIONS]->
-              (e:Entity)
-              -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity)
 
-        WHERE ne.value IN $entity_values
-
-        RETURN d, c, s, m, e, n, ne
-
-        UNION
-
-        MATCH (d:Document)
-              -[c:CONTAINS]->
-              (s:Statement)
-              -[m:MENTIONS]->
-              (e:Entity)
-              -[n:NORMALIZED_TO]->
-              (ne:NormalizedEntity)
-
-        WHERE elementId(d) IN $document_ids
-
-        RETURN d, c, s, m, e, n, ne
-        """
 
     return driver.execute_query(
         query,
@@ -459,29 +435,57 @@ def get_shared_articles(entity1, entity2):
 
 
 def on_node_click(node):
-    """Handle the click event on a node in the graph visualization. Depending on the type of node clicked (Document or NormalizedEntity), it updates the session state to keep track of opened documents and normalized entities."""
+    """Handle the click event on a node in the graph visualization. It updates the session state to select the clicked entity/document/author."""
+    labels = node.properties.get("labels", [])
+    if "Document" in labels:
+        st.session_state.pending_selected_document = node.id
+    elif "NormalizedEntity" in labels:
+        normalized_entity = node.properties.get("value")
+        if normalized_entity:
+            st.session_state.pending_selected_entity = normalized_entity
+    elif "Author" in labels:
+        author_name = node.properties.get("name")
+        if author_name:
+            st.session_state.pending_selected_author = author_name
+    elif "Statement" in labels:
+        statement_value = node.properties.get("value")
+        if statement_value:
+            st.session_state.pending_selected_statement = statement_value
 
+
+def on_node_expand(node):
+    """Handle the double-click event on a node in the graph visualization. It adds the node to the set of opened entities/documents to expand the neighborhood."""
     labels = node.properties.get("labels", [])
     if "Document" in labels:
         document_id = node.id
-
         if "opened_documents" not in st.session_state:
             st.session_state.opened_documents = []
-
         if document_id not in st.session_state.opened_documents:
             st.session_state.opened_documents.append(document_id)
 
     elif "NormalizedEntity" in labels:
         normalized_entity = node.properties.get("value")
-
         if normalized_entity:
             if "opened_normalized_entities" not in st.session_state:
                 st.session_state.opened_normalized_entities = []
-
             if normalized_entity not in st.session_state.opened_normalized_entities:
                 st.session_state.opened_normalized_entities.append(normalized_entity)
 
-            st.session_state.pending_selected_entity = normalized_entity
+    elif "Author" in labels:
+        author_name = node.properties.get("name")
+        if author_name:
+            if "opened_authors" not in st.session_state:
+                st.session_state.opened_authors = []
+            if author_name not in st.session_state.opened_authors:
+                st.session_state.opened_authors.append(author_name)
+
+    elif "Statement" in labels:
+        statement_value = node.properties.get("value")
+        if statement_value:
+            if "opened_statements" not in st.session_state:
+                st.session_state.opened_statements = []
+            if statement_value not in st.session_state.opened_statements:
+                st.session_state.opened_statements.append(statement_value)
 
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------

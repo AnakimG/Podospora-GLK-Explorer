@@ -18,7 +18,7 @@ lm = dspy.LM(
     temperature=0.7,
     cache=False,
 )
-# dspy.configure(lm=lm)
+dspy.configure(lm=lm)
 
 # ----------------
 # Signature
@@ -60,14 +60,14 @@ CAT_SUMMARIZER = dspy.ChainOfThought(signature=SummarizeCategory)
 # Fonctions qui va chercher les abstracts 
 #----------------------------------------
 categories = {
-    "1/7/8 - Life Cycle - Reproduction and Morphogenesis ",
-    "2 - Genomics and Genome Architecture ",
+    # "1/7/8 - Life Cycle - Reproduction and Morphogenesis ",
+    # "2 - Genomics and Genome Architecture ",
     "3/4 - Mitochondria - Energy Metabolism and Aging ",
-    "5/6 - Signal Transduction - Regulation and Stress Response ",
-    "9 - Vegetative Incompatibility and Cell Death ",
-    "10 - Comparative and Evolutionary Biology ",
-    "11 - Host–Pathogen and Symbiotic Interactions ",
-    "12 - Biotechnology and Applied Research ",
+    # "5/6 - Signal Transduction - Regulation and Stress Response ",
+    # "9 - Vegetative Incompatibility and Cell Death ",
+    # "10 - Comparative and Evolutionary Biology ",
+    # "11 - Host–Pathogen and Symbiotic Interactions ",
+    # "12 - Biotechnology and Applied Research ",
 }
 
 def load_category_from_csv(csv_path:str)->dict:
@@ -116,39 +116,42 @@ print(abstracts_by_category)
 
 ## Création des summarized abstracts par catégorie et écriture dans un fichier JSON 
 
-summarized_abstracts_by_category = {}
+# summarized_abstracts_by_category = {}
 
-for category in abstracts_by_category.keys():
-    print(f"Processing category {category}\n")
+# for category in abstracts_by_category.keys():
+#     print(f"Processing category {category}\n")
 
-    summarized_abstracts = []
+#     summarized_abstracts = []
 
-    for paper in abstracts_by_category[category]:
-        print(f"Processing abstract for DOI {paper['doi']}\n")
+#     for paper in abstracts_by_category[category]:
+#         print(f"Processing abstract for DOI {paper['doi']}\n")
 
-        summary = SUMMARIZER(
-            abstract=paper["abstract"]
-        ).summarized_abstract
+#         summary = SUMMARIZER(
+#             abstract=paper["abstract"]
+#         ).summarized_abstract
 
-        summarized_abstracts.append({
-            "doi": paper["doi"],
-            "summarized_abstract": summary
-        })
+#         summarized_abstracts.append({
+#             "doi": paper["doi"],
+#             "summarized_abstract": summary
+#         })
 
-    summarized_abstracts_by_category[category] = summarized_abstracts
+#     summarized_abstracts_by_category[category] = summarized_abstracts
 
-# Écriture dans le fichier JSON
-with open("/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_abstracts_by_category.json", "w", encoding="utf-8") as f:
-    json.dump(
-        summarized_abstracts_by_category,
-        f,
-        ensure_ascii=False,
-        indent=2
-    )
+# # Écriture dans le fichier JSON
+# with open("/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_abstracts_by_category.json", "w", encoding="utf-8") as f:
+#     json.dump(
+#         summarized_abstracts_by_category,
+#         f,
+#         ensure_ascii=False,
+#         indent=2
+    # )
         
 
-# summarized_abstracts = ['The HET-s prion converts soluble HET-S into an integral membrane protein that destabilizes lipid membranes. Structural changes expose a transmembrane segment, causing oligomerization and membrane leakage. This mechanism resembles pore-forming toxins and induces cell death.', 'In Podospora anserina, the NLR NWD2 uses an N-terminal β-solenoid motif to induce [Het-s] prion formation and activate the HET-S pore-forming protein. This mechanism triggers programmed cell death, demonstrating the importance of amyloid and prion-like signaling in fungal immunity.', 'In the fungus Podospora anserina, allorecognition loci define reproductively isolated groups through pleiotropic effects on sexual compatibility. Antagonistic interactions between unlinked het-r and het-v genes under balancing selection drive the origin and coexistence of these groups.', 'This study examines heterokaryon incompatibility in filamentous fungi controlled by het/vic loci. It focuses on the [Het-s] prion in Podospora anserina, detailing its discovery, unique architecture, and functions in meiotic drive and programmed cell death.', 'This study analyzes transcriptional changes during heterokaryon incompatibility in *Podospora anserina*, revealing massive gene reprogramming with specific domain enrichment and proteolytic activity. The response resembles host-pathogen interactions and shows significant overlap with *Neurospora crassa*.', 'Researchers propose a conserved fungal signal transduction mechanism where STAND proteins template amyloid folds in effector proteins to induce toxicity, suggesting evolutionary conservation of amyloid-based signaling across species.', 'This study utilizes Self-Consistent Path Sampling (SCPS) simulations to investigate prion replication mechanisms, overcoming limitations of standard molecular dynamics. Results from the HET-s prion domain suggest that prion propagation across evolutionarily distant species shares common templating features.', 'The [Het-s] prion in Podospora anserina induces cell death by triggering conformational changes in Het-S via co-amyloidogenesis. This exposes transmembrane helices that form pores, leading to cytosolic leakage. These findings expand the functional repertoire of amyloids and suggest parallels to pathological toxicity.', 'This study characterizes gasdermin-based cell death in the fungus *Podospora anserina*, revealing that HET-Q1 activity is controlled by proteolytic cleavage via the HET-Q2 protease. Genomic analysis shows gasdermin genes cluster with protease-encoding genes, establishing evolutionary parallels between fungal and mammalian gasdermin-dependent cell death pathways.']
+summarized_abstracts = ['The HET-s prion converts soluble HET-S into an integral membrane protein that destabilizes lipid membranes. Structural changes expose a transmembrane segment, causing oligomerization and membrane leakage. This mechanism resembles pore-forming toxins and induces cell death.', 'In Podospora anserina, the NLR NWD2 uses an N-terminal β-solenoid motif to induce [Het-s] prion formation and activate the HET-S pore-forming protein. This mechanism triggers programmed cell death, demonstrating the importance of amyloid and prion-like signaling in fungal immunity.', 'In the fungus Podospora anserina, allorecognition loci define reproductively isolated groups through pleiotropic effects on sexual compatibility. Antagonistic interactions between unlinked het-r and het-v genes under balancing selection drive the origin and coexistence of these groups.', 'This study examines heterokaryon incompatibility in filamentous fungi controlled by het/vic loci. It focuses on the [Het-s] prion in Podospora anserina, detailing its discovery, unique architecture, and functions in meiotic drive and programmed cell death.', 'This study analyzes transcriptional changes during heterokaryon incompatibility in *Podospora anserina*, revealing massive gene reprogramming with specific domain enrichment and proteolytic activity. The response resembles host-pathogen interactions and shows significant overlap with *Neurospora crassa*.', 'Researchers propose a conserved fungal signal transduction mechanism where STAND proteins template amyloid folds in effector proteins to induce toxicity, suggesting evolutionary conservation of amyloid-based signaling across species.', 'This study utilizes Self-Consistent Path Sampling (SCPS) simulations to investigate prion replication mechanisms, overcoming limitations of standard molecular dynamics. Results from the HET-s prion domain suggest that prion propagation across evolutionarily distant species shares common templating features.', 'The [Het-s] prion in Podospora anserina induces cell death by triggering conformational changes in Het-S via co-amyloidogenesis. This exposes transmembrane helices that form pores, leading to cytosolic leakage. These findings expand the functional repertoire of amyloids and suggest parallels to pathological toxicity.', 'This study characterizes gasdermin-based cell death in the fungus *Podospora anserina*, revealing that HET-Q1 activity is controlled by proteolytic cleavage via the HET-Q2 protease. Genomic analysis shows gasdermin genes cluster with protease-encoding genes, establishing evolutionary parallels between fungal and mammalian gasdermin-dependent cell death pathways.']
 summarized_category = {}
+
+with open("/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_abstracts_by_category_copy.json", "r", encoding="utf-8") as f:
+    summarized_abstracts_by_category = json.load(f)
 
 for category, summarized_abstracts in summarized_abstracts_by_category.items():
     print(f"Processing category {category}\n")
@@ -158,7 +161,7 @@ for category, summarized_abstracts in summarized_abstracts_by_category.items():
     )
     summarized_category[category] = result.summarized_category
 
-with open("/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_category.json", "w", encoding="utf-8") as f:
+with open("/Users/anakim.gualdoni/Documents/Podospora-GLK-explorer/category_narrative/summarized_category_copy.json", "w", encoding="utf-8") as f:
     json.dump(
         summarized_category,
         f,

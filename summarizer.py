@@ -41,5 +41,6 @@ def generate_summary(normalized_entity, statements):
             normalized_entity=normalized_entity,
             statements=statements,
         )
+    dspy.inspect_history(n=1)
 
     return result.summary
